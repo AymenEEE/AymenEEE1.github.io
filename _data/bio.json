@@ -9,40 +9,39 @@
     "summary": "Currently studying Electrical and electronic engineering at Imperial College London. I expect to graduate in Spring, 2025.",
     "location": {  "city": "London", "countryCode": "UK"},
     "profiles": [
-      { "network": "github", "username": "mmaluhia", "url": "http://github.com/changeme" },
-      { "network": "linkedin", "username": "mollymaluhia", "url": "http://linkedin.com/in/changeme" },
-      { "network": "twitter", "username": "mollymal", "url": "http://twitter.com/changeme" },
-      { "network": "instagram", "username": "molly", "url": "http://instagram.com/changeme" }
+      { "network": "github", "username": "AymenEEE", "url": "http://github.com/AymenEEE" },
+      { "network": "linkedin", "username": "Aymen Jaber", "url": "https://www.linkedin.com/in/aymen-jaber-078629262/" }
     ]
   },
   "interests": [
-    { "name": "Interactive media" },
-    { "name": "Neuromorphic Computing" },
-    { "name": "Quantum Computing" },
-    { "name": "Robotics" },
-    { "name": "3D Graphics" }
+    { "name": "Debugging circuits" },
+    { "name": "l" },
+    { "name": "Control systems" },
+    { "name": "Signal processing" }
+    
   ],
   "skills": [
     {
-      "name": "Languages and Frameworks",
-      "keywords": [ "C", "C++", "Java", "Javascript", "Assembly", "Common Lisp" ]
+      "name": "Languages",
+      "keywords": ["C++", "SQL", "Python", "MATLAB"]
     },
     {
-      "name": "Toolsets/OS",
-      "keywords": [ "MacOS", "Ubuntu", "Git/GitHub", "g++", "TI LaunchPad" ]
+      "name": "Platforms,
+      "keywords": ["GitHub", "Arduino", "Jupyter Notebook"]
     }
   ],
   "education": [
     {
-      "institution": "University of Hawaii, Honolulu, HI",
-      "area": "Computer Science (expected Spring, 2018)",
-      "studyType": "B.S.",
-      "startDate": "2013-09-01",
+      "institution": "Imperial College London",
+      "area": "Electrical and Electronic Engineering",
+      "studyType": "MEng",
+      "startDate": "2021-010-01",
       "endDate": "Present",
-      "courses": [
+      "courses": [ "Control Systems", "Power Electronics", "Circuits & Systems", "Mathematics for Engineers", "Signals & Systems" , "Electromagnetism", "Analysis & Design of Circuits", "Digital Electronics and Computer Architecture", "Topics in Electrical Engineering"
       ]
     }
   ],
+  
   "work": [
     {
       "company": "UH Manoa Board of Publications",
@@ -110,6 +109,7 @@
       "summary": "My team won first place in 2015.  See my portfolio site for more details."
     }
   ],
+  
   "references": [
     {
       "name": "Available upon request"
