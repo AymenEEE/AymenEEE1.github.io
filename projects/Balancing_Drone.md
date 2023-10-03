@@ -4,7 +4,7 @@ type: project
 image: img/micromouse/micromouse-square.jpg
 title: "Balancing Drone"
 date: 2023-09-28
-published: false
+published: true
 labels:
   - Brushless motor
   - Arduino
