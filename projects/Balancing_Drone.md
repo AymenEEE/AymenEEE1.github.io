@@ -246,10 +246,7 @@ Below is the demonstration of the system in action.
 
 <body>
     <h1> setpoint = 0 degree</h1>
-
-    <video width="640" height="360" controls>
+    <video width="700" height="360" controls>
         <source src="..img/demo4" type="video/mp4">
-        Your browser does not support the video tag.
     </video>
-
 </body>
