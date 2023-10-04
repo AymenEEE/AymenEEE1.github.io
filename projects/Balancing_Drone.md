@@ -1,7 +1,7 @@
 ---
 layout: project
 type: project
-image: img/LED_beacons.png
+image: img/Thumbnail.jpg
 title: "Balancing Drone"
 date: 2023-09-28
 published: true
@@ -233,3 +233,11 @@ void kalman_1d(float KalmanState, float KalmanUncertainty, float KalmanInput, fl
 }
 // This function uses the Kalman filter equations to improve readings
 ```
+
+I have initially planned the build considering a brushless motor with 2000Kv rating ("Kv" means constant velocity, not kiloVolts!), but I received a faulty product. Unfortunately, I was only able to replace it with a 1000Kv motor which was not able to carry the weight of the stick. I improvised by attaching a wrench on the other end to help the struggling motor.
+
+Below is the demonstration of the system in action. 
+
+<video width="700" height = "350" controls>
+    <source src="..img/demo.mp4" type="video/mp4">
+</video>
