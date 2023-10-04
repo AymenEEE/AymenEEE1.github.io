@@ -72,7 +72,7 @@ float Angle_error = 0; // current angle error
 float previous_error; // 
 
 int Throttle = 1350; // This is the base throttle value. I found this to be the sweet spot as a start
-float pid_p = 0, pid_i = 0, pid_d = 0, PID = 0; //<-|----PID constatns
+float pid_p = 0, pid_i = 0, pid_d = 0, PID = 0; //<-|----PID constants
 float kp = 2, ki = 0, kd = 1.5; //<-----------------|
 
 int DELAY = 1000;
@@ -238,6 +238,18 @@ I have initially planned the build considering a brushless motor with 2000Kv rat
 
 Below is the demonstration of the system in action. 
 
-<video width="700" height = "350" controls>
-    <source src="..img/demo.mp4" type="video/mp4">
-</video>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Demonstration </title>
+</head>
+
+<body>
+    <h1> setpoint = 0 degree</h1>
+
+    <video width="640" height="360" controls>
+        <source src="..img/demo4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+</body>
