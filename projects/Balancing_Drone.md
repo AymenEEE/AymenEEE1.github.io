@@ -1,7 +1,7 @@
 ---
 layout: project
 type: project
-image: img/LED_beacons.jpg
+image: img/LED_beacons.png
 title: "Balancing Drone"
 date: 2023-09-28
 published: true
