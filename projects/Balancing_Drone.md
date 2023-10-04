@@ -19,9 +19,9 @@ I thought of a fun (and safe) way to utilise and demonstrate PID controllers in 
 The physical system consists of a stand connected to the shaft of a wooden stick via ball-bearings, providing low friction and free movement. As for the technical side we have a microcontroller used to control the speed of the brushless motor using a PWM signal(Pulse Width Modulation) based on the readings of an angle sensor. I have used the MPU6050 (cheap and reliable!).
 
 <div class="text-center p-4">
-  <img width="200px" src="../img/side_view_of_stick.jpg" class="img-thumbnail" >
-  <img width="200px" src="../img/shaft.jpg" class="img-thumbnail" >
-  <img width="200px" src="../img/MPU6050-Module-Pinout.jpg" class="img-thumbnail" >
+  <img width="400px" src="../img/side_view_of_stick.jpg" class="img-thumbnail" >
+  <img width="400px" src="../img/shaft.jpg" class="img-thumbnail" >
+  <img width="400px" src="../img/MPU6050-Module-Pinout.jpg" class="img-thumbnail" >
 </div>
 
 There three parts to the control algorithm:
