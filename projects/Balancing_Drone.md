@@ -1,7 +1,7 @@
 ---
 layout: project
 type: project
-image: img/micromouse/micromouse-square.jpg
+image: img/LED_beacons.jpg
 title: "Balancing Drone"
 date: 2023-09-28
 published: true
