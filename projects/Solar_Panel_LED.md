@@ -13,11 +13,6 @@ labels:
 summary: "This project is focused on using solar energy to create an energy grid capable of powering on 3 LED's. "
 ---
 
-<div class="text-center p-4">
-  <img width="200px" src="../img/micromouse/micromouse-robot.png" class="img-thumbnail" >
-  <img width="200px" src="../img/micromouse/micromouse-robot-2.jpg" class="img-thumbnail" >
-  <img width="200px" src="../img/micromouse/micromouse-circuit.png" class="img-thumbnail" >
-</div>
 <h2> What? </h2>
 Powering a grid using the sun is not as straightforward as it initially seems. This is because the voltage that a solar panel outputs is proportional to sunlight intensity, which is rarely stable (especially in the UK!). Consequently, we need a way of drawing varying amounts of power based on how much is available from a panel. 
 One solution is using an SMPS (Switch-Mode Power Supplies), which can draw different voltages (hence currents) based on the duty cycle of a PWM signal. The duty cycle is proportion that a signal with period T seconds is on (or HIGH), and varies between 0 and 100 percent.
@@ -25,7 +20,7 @@ This also gives us the ability to either "buck" or "boost" the input voltage fro
 
 The diagram below outlines the circuit's layout:
 
-<img src="/img/solar_panel_led" alt="HTML5 Icon" style="width:400px;height:200px;">
+<img src="/img/solar_panel_led/schematic" alt="HTML5 Icon" style="width:400px;height:200px;">
 
 <h2> Equipment </h2>
 <ul>
