@@ -20,7 +20,7 @@ This also gives us the ability to either "buck" or "boost" the input voltage fro
 
 The diagram below outlines the circuit's layout:
 
-<img src="/img/solar_panel_led/schematic" alt="HTML5 Icon" style="width:400px;height:200px;">
+<img src="../img/solar_panel_led/schematic.jpg" alt="HTML5 Icon" style="width:400px;height:200px;">
 
 <h2> Equipment </h2>
 <ul>
