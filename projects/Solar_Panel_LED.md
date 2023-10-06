@@ -407,6 +407,7 @@ Below is a video showcasing the system:
   <source src="..img/Solar_led_project/led" type="video/mp4">
 Your browser does not support the video tag.
 </video>
+<script>
 var interval = setInterval(function(){
           var countForVideo = document.getElementById('vid').readyState;
           if(countForVideo == 4){
@@ -414,5 +415,4 @@ var interval = setInterval(function(){
             clearInterval(interval);
           }
         },2000);
-
-
+</script>
