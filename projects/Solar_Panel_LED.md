@@ -404,8 +404,15 @@ After multiple tests, we saw that the LED's lasted for a maximum of 20 seconds w
 Below is a video showcasing the system:
 
 <video width="500" height="240" controls>
-  <source src="..img/Solar_led_project/led.mp4" type="video/mp4">
+  <source src="..img/Solar_led_project/led" type="video/mp4">
 Your browser does not support the video tag.
 </video>
+var interval = setInterval(function(){
+          var countForVideo = document.getElementById('vid').readyState;
+          if(countForVideo == 4){
+            document.getElementById('vid').play();
+            clearInterval(interval);
+          }
+        },2000);
 
 
