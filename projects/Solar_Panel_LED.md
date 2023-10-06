@@ -15,7 +15,9 @@ summary: "This project is focused on using solar energy to create an energy grid
 
 <h2> What? </h2>
 Powering a grid using the sun is not as straightforward as it initially seems. This is because the voltage that a solar panel outputs is proportional to sunlight intensity, which is rarely stable (especially in the UK!). Consequently, we need a way of drawing varying amounts of power based on how much is available from a panel. 
+
 One solution is using an SMPS (Switch-Mode Power Supplies), which can draw different voltages (hence currents) based on the duty cycle of a PWM signal. The duty cycle is proportion that a signal with period T seconds is on (or HIGH), and varies between 0 and 100 percent.
+
 This also gives us the ability to either "buck" or "boost" the input voltage from the solar panels. "Buck" is a term for reducing input voltage, and "boost" means increasing the voltage. We have decided to go with the boost configuration as this allows us to charge the capacitor to a higher voltage.
 
 The diagram below outlines the circuit's layout:
@@ -402,23 +404,10 @@ At the same time, the LED's worked well when connected to the grid, proving the 
 After multiple tests, we saw that the LED's lasted for a maximum of 20 seconds when voltage is zero.
 
 Below is a video showcasing the system:
-<script>
-var interval = setInterval(function(){
-          var countForVideo = document.getElementById('vid').readyState;
-          if(countForVideo == 4){
-            document.getElementById('vid').play();
-            clearInterval(interval);
-          }
-        },2000);
-</script>
-<video width="500" height="240" controls>
-  <source src="..img/Solar_led_project/led" type="video/mp4">
-Your browser does not support the video tag.
-</video>
 
-<video width="75%" height="240" autoplay="autoplay" loop="true">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/L2T6Ma9WZpw?si=nWW-nAM6TElNg7fB" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-<source src="..img/Solar_led_project/led" type="video/mp4"/>
+And outside:
 
-</video>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/GuKI7Nkt1Wo?si=3TTA17BVIXxN1iQy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
