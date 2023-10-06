@@ -409,5 +409,5 @@ Below is a video showcasing the system:
 
 And outside with the real panels:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/GuKI7Nkt1Wo?si=3TTA17BVIXxN1iQy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="560" height="400" src="https://www.youtube.com/embed/GuKI7Nkt1Wo?si=3TTA17BVIXxN1iQy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
