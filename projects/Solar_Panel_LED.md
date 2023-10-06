@@ -10,7 +10,7 @@ labels:
   - Switch Mode Power Supplies
   - C++
   - Python
-summary: "This project is focused on using solar energy to create an energy grid capable of powering on 3 LED's. "
+summary: "This project is focused on using solar energy to create an energy grid capable of powering on 3 LED's. This was developed by myself and a teammate"
 ---
 
 <h2> What? </h2>
@@ -35,12 +35,13 @@ The diagram below outlines the circuit's layout:
 </ul>
 
 <h2> How? </h2>
-In the boost SMPS, I have implemented a type of MPPT algorithm named "perturb and observe". This is explained in the code below. 
-In the Buck SMPS, I implemented a PID algorithm that limits the current at the LEDs' current ratings, to ensure that none of them break.
+In the boost SMPS, we have implemented a type of MPPT algorithm named "perturb and observe". This is explained in the code below. 
+In the Buck SMPS, we implemented a PID algorithm that limits the current at the LEDs' current ratings, to ensure that none of them break.
 The capacitor is directly connected to the grid, which means that the voltage of the grid will never change abruptly due to changing sunlight conditions. 
 
 ```cpp
 /*
+ * Boost SMPS code
  * pin6 is PWM output at 62.5kHz.
  * duty-cycle saturation is set as 2% - 98%
 */
@@ -138,7 +139,7 @@ void setup() {
           pwm_modulate(open_loop); // and send it out
           curr_pwr = iL*vb; //calculated power in this instance
           del_pwr = curr_pwr - prev_pwr; //calculate power difference
-          del_vb = vb - prev_vb; // caluclate voltage difference
+          del_vb = vb - prev_vb; // calculate voltage difference
           if(del_pwr != 0){ 
             if(del_pwr > 0){ 
               if(del_vb < 0){
@@ -279,3 +280,132 @@ void pwm_modulate(float pwm_input){ // PWM function
 
 /*end of the program.*/
 ```
+
+Below is the BUCK smps code for the LED's:
+
+```python
+# Developed by Aymen Jaber Shakhwat 
+from machine import Pin, ADC, PWM
+
+vret_pin = ADC(Pin(26))
+vout_pin = ADC(Pin(28))
+vin_pin = ADC(Pin(27))
+pwm = PWM(Pin(0))
+pwm.freq(100000)
+pwm_en = Pin(1, Pin.OUT)
+
+count = 0
+pwm_out = 0
+pwm_ref = 1000
+setpoint = 0.0
+delta = 100
+I_min = 0.075 # this is different for various LED colours
+I_max = 0.3 # so does this one
+
+# Define the reference voltage of the ADC (adjust as per your system)
+ADC_REFERENCE_VOLTAGE = 3.3
+
+def adc_to_voltage(adc_value): 
+    return (adc_value / 65535) * ADC_REFERENCE_VOLTAGE # convert digital reading to voltage
+
+def voltage_to_adc(voltage_value):
+    return (voltage_value * 65535) / ADC_REFERENCE_VOLTAGE # convert voltage reading to digital
+
+
+def saturate(duty): #limit duty cycle to protect LED drivers
+    if duty > 62500:
+        duty = 62500
+    if duty < 100:
+        duty = 100
+    return duty
+
+
+def current_limiter(vret, pwm_ref,I_max): # Used to limit current based on I_max
+    if vret >= I_max:
+        pwm_ref = pwm_ref + delta
+    elif vret <= I_min:
+        pwm_ref = pwm_ref - delta
+    else:
+        pwm_ref = pwm_ref
+    #return pwm_ref
+
+#PID control variables
+# This also varies between LED colours
+kpi = 0.5 
+kdi = 0
+kii = 0.1
+
+def pidi(pid_input)
+    e_integration = 0 #initalises e_integration value
+    global e1i,e2i #creates global variable that store the previous values 
+    e0i = 0.07 - vret
+    e_integration = e0i
+    u1i = vret
+    e2i = e1i
+    e1i = pid_input
+    
+    #anti-windup
+    if u1i >= I_max
+        e_integration = 0
+    elif u1i <= I_min
+        e_integration = 0
+
+    delta_ui = kpi * (e0i - e1i) + kii * Ts * e_integration + kdi / Ts * (e0i - 2 * e1i + e2i)
+    u0i = u1i + delta_ui
+    return u0i 
+        
+while True:
+    pwm_en.value(1)
+
+    vin_bin = vin_pin.read_u16()
+    vout_bin = vout_pin.read_u16()
+    vret_bin = vret_pin.read_u16()
+ 
+    vin = adc_to_voltage(vin_pin.read_u16())   #This reads the pins in volts rather than binary
+    vout = adc_to_voltage(vout_pin.read_u16())
+    vret = adc_to_voltage(vret_pin.read_u16())
+    count = count + 1
+    maxpower = vret * vret
+    #I_max = maxpower / vout
+
+    pwm_ref = 25000
+    pwm_out = saturate(pwm_ref)
+    pwm.duty_u16(pwm_out)
+    current_limiter(vret, pwm_out/62500,I_max)
+    pwm_out = int(pidi(vret) * 62500)
+    
+     
+for 
+    
+
+    if count > 2000:
+        print("Vin = {:.0f}".format(vin))
+        print("Vout = {:.0f}".format(vout))
+        print("Vret = {:.0f}".format(vret))
+        print("Duty = {:.0f}".format(pwm_out))
+        print("Bin Vin = {:.0f}".format(vin_bin))
+        print("Bin Vout = {:.0f}".format(vout_bin))
+        print("Bin Vret = {:.0f}".format(vret_bin))
+    
+        
+
+        
+        count = 0
+```
+
+<h2> Results </h2>
+To test the sytem out, I simulated the solar panels using a variable power supply. This is more reliable than using the sun as we can directly control voltage levels.
+
+When the voltage increases, I saw that the boost SMPS was drawing more power. Likewise, when voltage decreases the SMPS draws less power. 
+At the same time, the LED's worked well when connected to the grid, proving the system to be reliable. 
+
+After multiple tests, we saw that the LED's lasted for a maximum of 20 seconds when voltage is zero.
+
+Below is a video showcasing the system:
+
+<video width="500" height="240" controls>
+  <source src="..img/solar_led_project/led.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+
+
