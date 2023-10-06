@@ -15,8 +15,8 @@
   },
   "interests": [
     { "name": "Analysing circuits" },
-    { "name": "FPGA" },
-    { "name": "Control systems" },
+    { "name": "Digital circuits in FPGA" },
+    { "name": "Control algorithm developement" },
     { "name": "Audio processing" }
     
   ],
@@ -35,7 +35,7 @@
       "institution": "Imperial College London",
       "area": "Electrical and Electronic Engineering",
       "studyType": "MEng",
-      "startDate": "2021-010-01",
+      "startDate": "2021-10-01",
       "endDate": "Present",
       "courses": [ "Control Systems", "Power Electronics", "Circuits & Systems", "Mathematics for Engineers", "Signals & Systems" , "Electromagnetism", "Analysis & Design of Circuits", "Digital Electronics and Computer Architecture", "Topics in Electrical Engineering"
       ]
