@@ -407,7 +407,7 @@ Below is a video showcasing the system:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/L2T6Ma9WZpw?si=nWW-nAM6TElNg7fB" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-And outside:
+And outside with the real panels:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/GuKI7Nkt1Wo?si=3TTA17BVIXxN1iQy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
