@@ -416,3 +416,9 @@ var interval = setInterval(function(){
 Your browser does not support the video tag.
 </video>
 
+<video width="75%" height="240" autoplay="autoplay" loop="true">
+
+<source src="..img/Solar_led_project/led" type="video/mp4"/>
+
+</video>
+
