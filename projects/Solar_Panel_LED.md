@@ -402,11 +402,6 @@ At the same time, the LED's worked well when connected to the grid, proving the 
 After multiple tests, we saw that the LED's lasted for a maximum of 20 seconds when voltage is zero.
 
 Below is a video showcasing the system:
-
-<video width="500" height="240" controls>
-  <source src="..img/Solar_led_project/led" type="video/mp4">
-Your browser does not support the video tag.
-</video>
 <script>
 var interval = setInterval(function(){
           var countForVideo = document.getElementById('vid').readyState;
@@ -416,3 +411,8 @@ var interval = setInterval(function(){
           }
         },2000);
 </script>
+<video width="500" height="240" controls>
+  <source src="..img/Solar_led_project/led" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+
