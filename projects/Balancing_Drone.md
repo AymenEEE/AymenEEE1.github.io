@@ -236,17 +236,7 @@ void kalman_1d(float KalmanState, float KalmanUncertainty, float KalmanInput, fl
 
 I have initially planned the build considering a brushless motor with 2000Kv rating ("Kv" means constant velocity, not kiloVolts!), but I received a faulty product. Unfortunately, I was only able to replace it with a 1000Kv motor which was not able to carry the weight of the stick. I improvised by attaching a wrench on the other end to help the struggling motor.
 
-Below is the demonstration of the system in action. 
+Below is the demonstration of the system in action:
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Demonstration </title>
-</head>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uXsSm-ZEUNU?si=KSJ9VYgaaeFNC-vx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-<body>
-    <h1> setpoint = 0 degree</h1>
-    <video width="700" height="360" controls>
-        <source src="..img/demo4" type="video/mp4">
-    </video>
-</body>
