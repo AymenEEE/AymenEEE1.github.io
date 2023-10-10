@@ -6,7 +6,7 @@
     "email": "aymenjaber02@outlook.com",
     "phone": "07467584709",
     "website": "https://AymenEEE.github.io",
-    "summary": "Currently studying Electrical and electronic engineering at Imperial College London. I expect to graduate in Spring, 2025.",
+    "summary": "Currently studying Electrical and electronic engineering with Management at Imperial College London. I expect to graduate in Spring, 2025.",
     "location": {  "city": "London", "countryCode": "UK"},
     "profiles": [
       { "network": "github", "username": "AymenEEE", "url": "http://github.com/AymenEEE" },
@@ -31,11 +31,11 @@
     },
     {
       "name": "Soft skills",
-      "keywords": ["Project management", "Communication with clients", "Documentation", "Report writing"]
+      "courses": ["Project management", "Communication with clients", "Documentation", "Report writing"]
     }
   ],
   
-  "Education": [
+  "education": [
     {
       "institution": "Imperial College London",
       "area": "Electrical and Electronic Engineering",
