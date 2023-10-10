@@ -31,7 +31,7 @@
     },
     {
       "name": "Soft skills",
-      "courses": ["Project management", "Communication with clients", "Documentation", "Report writing"]
+      "Keywords": ["Project management", "Communication with clients", "Documentation", "Report writing"]
     }
   ],
   "Education": [
