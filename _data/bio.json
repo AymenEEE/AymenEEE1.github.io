@@ -31,9 +31,10 @@
     },
     {
       "name": "Soft skills",
-      "Keywords": ["Project management", "Communication with clients", "Documentation", "Report writing"]
+      "Keywords": ["Project management"]
     }
   ],
+  
   "Education": [
     {
       "institution": "Imperial College London",
