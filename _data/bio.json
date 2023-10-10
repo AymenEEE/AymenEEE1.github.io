@@ -28,9 +28,13 @@
     {
       "name": "Platforms",
       "keywords": ["GitHub", "Arduino", "Jupyter Notebook", "LTSPICE"]
+    },
+    {
+      "name": "Soft skills",
+      "courses": ["Project management", "Communication with clients", "Documentation", "Report writing"]
     }
   ],
-  "education": [
+  "Education": [
     {
       "institution": "Imperial College London",
       "area": "Electrical and Electronic Engineering",
