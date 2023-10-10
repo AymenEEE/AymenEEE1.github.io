@@ -24,7 +24,7 @@ The physical system consists of a stand connected to the shaft of a wooden stick
   <img width="400px" src="../img/MPU6050-Module-Pinout.jpg" class="img-thumbnail" >
 </div>
 
-How?
+<h2>How?</h2>
 
 There three parts to the control algorithm:
 <ul>
