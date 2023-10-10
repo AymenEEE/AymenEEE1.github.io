@@ -12,7 +12,7 @@ labels:
 summary: "This balancing drone uses an arduino integrated with an mpu6050 sensor and a brushless motor to control its angle using a PID algorithm."
 ---
 
-
+<h2> What? </h2>
 
 I thought of a fun (and safe) way to utilise and demonstrate PID controllers in action, and this is what came across. It moves like a see-saw but the force is only on one side. This is harder to work with than a system with two motors opposite to each other, as we are relying on gravity to pull down the stick when we want it to descend.
 
@@ -24,13 +24,17 @@ The physical system consists of a stand connected to the shaft of a wooden stick
   <img width="400px" src="../img/MPU6050-Module-Pinout.jpg" class="img-thumbnail" >
 </div>
 
+How?
+
 There three parts to the control algorithm:
-1) Read sensor data
-2) convert readings into angle using calculations
-3) Filter sensor data
-4) Compare current reading with the desired angle
-5) Calculate the PID output
-6) Translate PID output into a duty cycle reading.
+<ul>
+  <li> Read sensor data</li>
+  <li> Convert readings into angle using calculations</li>
+  <li> Filter sensor data</li>
+  <li> Compare current reading with the desired angle</li>
+  <li> Calculate the PID output</li>
+  <li> Translate PID output into a duty cycle reading.</li>
+</ul>
 
 This is pretty much what makes up the control system, but if you'd like to look into the technicality of the process then have a look at the code below:
 
@@ -234,7 +238,12 @@ void kalman_1d(float KalmanState, float KalmanUncertainty, float KalmanInput, fl
 // This function uses the Kalman filter equations to improve readings
 ```
 
-I have initially planned the build considering a brushless motor with 2000Kv rating ("Kv" means constant velocity, not kiloVolts!), but I received a faulty product. Unfortunately, I was only able to replace it with a 1000Kv motor which was not able to carry the weight of the stick. I improvised by attaching a wrench on the other end to help the struggling motor.
+<h2>Results</h2>
+Overall, the control algorithm seems to be effective. 
+
+Without the low-pass filter, the system experiences significant oscillation due to noisy sensor readings. The low-pass filter solves this problem, however it comes with slightly delayed sensor readings.
+
+There is a satisfactory amount of distrubance rejection, with a settling time of about 5 seconds.
 
 Below is the demonstration of the system in action:
 
