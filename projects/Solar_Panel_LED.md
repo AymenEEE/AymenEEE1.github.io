@@ -286,7 +286,7 @@ void pwm_modulate(float pwm_input){ // PWM function
 Below is the BUCK smps code for the LED's:
 
 ```python
-# Developed by Aymen Jaber Shakhwat 
+# Developed by Aymen Jaber and Sakhwat 
 from machine import Pin, ADC, PWM
 
 vret_pin = ADC(Pin(26))
