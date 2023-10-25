@@ -17,7 +17,6 @@
     { "name": "Analysing circuits" },
     { "name": "Digital circuits in FPGA" },
     { "name": "Control algorithm developement" },
-    { "name": "Audio processing" }
     
   ],
   "skills": [
@@ -29,9 +28,37 @@
       "name": "Platforms",
       "keywords": ["GitHub", "Arduino", "Jupyter Notebook", "LTSPICE"]
     },
+    
     {
       "name": "Soft skills",
-      "courses": ["Project management", "Communication with clients", "Documentation", "Report writing"]
+      "keywords": ["Project management", "Communication with clients", "Documentation", "Report writing"]
+    }
+
+    {
+      "name": "Control Systems",
+      "keywords": ["PID control systems", "Feedback loop systems", "System response analysis"]
+    }
+
+    {
+      "name": "Power Systems",
+      "keywords": ["DC/DC systems such as SMPS", "Maximum power point tracking algorithm", "Solar panel systems"]
+    }
+
+    {
+      "name": "Analogue",
+      "keywords": ["Circuit simulation and analysis using LTSpice", "Experience in integrating operational amplifiers with speakers", "Active and passive filters"]
+    }
+
+    {
+      "name": "Digital Systems",
+      "keywords": ["Digital circuit design and verification using SystemVerilog", "Audio processing using DAC's and ADC's integrated with an FPGA system", "Knowledge in logic gates and counters", "Digital signal processing"]
+    }
+
+    
+
+    {
+      "name": "Practical Skills",
+      "keywords": ["Electrical testing instruments like oscilloscopes and multi-meters", "Soldering", "Reading and understanding datasheets"]
     }
   ],
   
