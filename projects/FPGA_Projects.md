@@ -1,4 +1,4 @@
-
+---
 layout: project
 type: project
 image: img/micromouse/micromouse-square.jpg
@@ -11,7 +11,7 @@ labels:
   - SystemVerilog
     
 summary: "This page shows a brief summary of my FPGA projects which includes 7-segments display, clock dividers and linear feedback shifts"
-
+---
 <h2>Lab 1</h2>
   <h3>Segment displays</h3>
   <p>Driving a segments display is rather simple. All we have to do is create a look up table that corresponds to the individual segments and we're all good </p>
