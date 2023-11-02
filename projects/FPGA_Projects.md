@@ -15,7 +15,8 @@ summary: "This page shows a brief summary of my FPGA projects which includes 7-s
 <h2>Lab 1</h2>
   <h3>Segment displays</h3>
   <p>Driving a segments display is rather simple. All we have to do is create a look up table that corresponds to the individual segments and we're all good </p>
-  -- insert image & video--
+  
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/sjViU3GZsU4?si=7ITH9VzRnV-XH2_N" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
   <p> The same process is repeated for three displays. Each display can show up to 4 bits. Note that we are displaying the binary numbers as hexadecimal on the segment displays. </p>
   -- insert image & video
