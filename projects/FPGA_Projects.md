@@ -24,11 +24,17 @@ summary: "This page shows a brief summary of my FPGA projects which includes 7-s
 <h2>Lab 2</h2>
   <h3>Counters</h3>
     <p>This counter starts counting whenver en is pressed. The KEY button is AND'ed with the main system clock, and is wired to the enable port of the CTR module.</p>
-    <img src="img/FPGA/counter.png">
+<img src="img/FPGA/counter.png">
   <h3>Linear feedback shift registers</h3>
     <p>Linear feedback shift registers allow us to generate a sequence of seemingly random numbers. For this reason, they are called "pseudorandom" as the sequence is completely predictable</p>
+
+<img src="img/FPGA/LFSR.png">
     
     
 <h2>Lab 3</h2>
   <h3>PWM generator</h3>
-  <p></p>
+  <img src="img/FPGA/PWM.png">
+  - The ramp generator produces a Sawtooth wavefore
+  - The data register updates its output at rate of the frequency of the pulses outputted from clktick module.
+  - The sawtooth wave generator is connected to the negative input of the digital comparator, hence the comparator only outputs 1 if the wave is smaller than the positive input data_in.
+  - Increasing data_in increases the duty cycle of the digital comapartor's output.
