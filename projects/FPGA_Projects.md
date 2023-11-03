@@ -31,20 +31,24 @@ This counter starts counting whenver en is pressed. The KEY button is AND'ed wit
 
 <img src="../img/FPGA/counter.png" alt="HTML5 Icon" style="width:400px;height:200px;">
 
+<iframe width="1263" height="480" src="https://www.youtube.com/embed/Ksi4xVUIDAo" title="Slower Counter" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
 <h2>Linear feedback shift registers</h2>
 
 Linear feedback shift registers allow us to generate a sequence of seemingly random numbers. For this reason, they are called "pseudorandom" as the sequence is completely predictable.
 
 <img src="../img/FPGA/LFSR.png" alt="HTML5 Icon" style="width:400px;height:200px;">
 
+<iframe width="1263" height="480" src="https://www.youtube.com/embed/o3Q7eujZRc4" title="LFSR" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 <h2>PWM generator</h2>
 
 <img src="../img/FPGA/PWM.png" alt="HTML5 Icon" style="width:400px;height:200px;">
 
-<ol>
-  <li>The ramp generator produces a Sawtooth wavefore</li>
+<ol><li>The ramp generator produces a Sawtooth wavefore</li>
   <li>The data register updates its output at rate of the frequency of the pulses outputted from clktick module.
   <li>The sawtooth wave generator is connected to the negative input of the digital comparator, hence the comparator only outputs 1 if the wave is smaller than the positive input data_in</li>
-  <li>Increasing data_in increases the duty cycle of the digital comapartor's output</li>
-</ol>
+  <li>Increasing data_in increases the duty cycle of the digital comapartor's output</li></ol>
+
+  <iframe width="1263" height="480" src="https://www.youtube.com/embed/2j7ODyzN7r8" title="PWM Generator" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
