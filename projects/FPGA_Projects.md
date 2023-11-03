@@ -18,8 +18,9 @@ summary: "This page shows a brief summary of my FPGA projects which includes 7-s
   
   <iframe width="560" height="315" src="https://www.youtube.com/embed/sjViU3GZsU4?si=7ITH9VzRnV-XH2_N" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-  <p> The same process is repeated for three displays. Each display can show up to 4 bits. Note that we are displaying the binary numbers as hexadecimal on the segment displays. </p>
-  -- insert image & video
+  <p> The same process is repeated for three displays. Each display can show up to 4 bits. Note that we are displaying the binary numbers as hexadecimal on the segment displays. (The video below has been reflected for some reason)</p>
+  <iframe width="320" height="560" src="https://www.youtube.com/embed/oSAhVVj67Rg" title="Three Segments" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+  
 <h2>Lab 2</h2>
   <h3>Counters</h3>
     <p> This counter starts counting whenver en is pressed. The KEY button is AND'ed with the main system clock, and is wired to the enable port of the CTR module.</p>
