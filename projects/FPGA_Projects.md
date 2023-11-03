@@ -1,10 +1,10 @@
 ---
 layout: project
 type: project
-image: img/micromouse/micromouse-square.jpg
-title: "FPGA_Projects_Collection"
-date: 2021
-published: false
+image: 
+title: "FPGA Projects Collection"
+date: 2022
+published: true
 labels:
   - Digital circuit design
   - Intel Quartus
