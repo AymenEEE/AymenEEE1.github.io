@@ -50,5 +50,5 @@ Linear feedback shift registers allow us to generate a sequence of seemingly ran
   <li>The sawtooth wave generator is connected to the negative input of the digital comparator, hence the comparator only outputs 1 if the wave is smaller than the positive input data_in</li>
   <li>Increasing data_in increases the duty cycle of the digital comapartor's output</li></ol>
 
-  <iframe width="1263" height="480" src="https://www.youtube.com/embed/2j7ODyzN7r8" title="PWM Generator" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="1263" height="480" src="https://www.youtube.com/embed/2j7ODyzN7r8" title="PWM Generator" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
