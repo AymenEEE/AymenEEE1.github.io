@@ -1,0 +1,80 @@
+{
+  "basics": {
+    "name": "Aymen Jaber",
+    "label": "Student",
+    "picture": "https://github.com/AymenEEE.png",
+    "email": "aymenjaber02@outlook.com",
+    "phone": "07467584709",
+    "website": "https://AymenEEE.github.io",
+    "summary": "Currently studying Electrical and electronic engineering with Management at Imperial College London. I expect to graduate in Spring, 2025.",
+    "location": {  "city": "London", "countryCode": "UK"},
+    "profiles": [
+      { "network": "github", "username": "AymenEEE", "url": "http://github.com/AymenEEE" },
+      { "network": "linkedin", "username": "Aymen Jaber", "url": "https://www.linkedin.com/in/aymen-jaber-078629262/" }
+    ]
+  },
+  "interests": [
+    { "name": "Analysing circuits" },
+    { "name": "Digital circuits in FPGA" },
+    { "name": "Control algorithm developement" },
+    
+  ],
+  "skills": [
+    {
+      "name": "Languages",
+      "keywords": ["C++", "SQL", "Python", "MATLAB"]
+    },
+    {
+      "name": "Platforms",
+      "keywords": ["GitHub", "Arduino", "Jupyter Notebook", "LTSPICE"]
+    },
+    
+    {
+      "name": "Soft skills",
+      "keywords": ["Project management", "Communication with clients", "Documentation", "Report writing"]
+    },
+
+    {
+      "name": "Control Systems",
+      "keywords": ["PID control systems", "Feedback loop systems", "System response analysis"]
+    },
+
+    {
+      "name": "Power Systems",
+      "keywords": ["DC/DC systems such as SMPS", "Maximum power point tracking algorithm", "Solar panel systems"]
+    },
+
+    {
+      "name": "Analogue",
+      "keywords": ["Circuit simulation and analysis using LTSpice", "Experience in integrating operational amplifiers with speakers", "Active and passive filters"]
+    },
+
+    {
+      "name": "Digital Systems",
+      "keywords": ["Digital circuit design and verification using SystemVerilog", "Audio processing using DAC's and ADC's integrated with an FPGA system", "Knowledge in logic gates and counters", "Digital signal processing"]
+    },
+
+    {
+      "name": "Practical Skills",
+      "keywords": ["Electrical testing instruments like oscilloscopes and multi-meters", "Soldering", "Reading and understanding datasheets"]
+    }
+  ],
+  
+  "education": [
+    {
+      "institution": "Imperial College London",
+      "area": "Electrical and Electronic Engineering",
+      "studyType": "MEng",
+      "startDate": "2021-10-01",
+      "endDate": "Present",
+      "courses": [ "Control Systems", "Power Electronics", "Circuits & Systems", "Mathematics for Engineers", "Signals & Systems" , "Electromagnetism", "Analysis & Design of Circuits", "Digital Electronics and Computer Architecture", "Topics in Electrical Engineering"
+      ]
+    }
+  ],
+  
+  "references": [
+    {
+      "name": "Available upon request"
+    }
+  ]
+}

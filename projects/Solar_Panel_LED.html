@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="title" content="Solar energy LED beacons | Aymen Jaber | Professional Portfolio">
+    <meta name="description" content="">
+    <meta name="image" content="https://github.com/AymenEEE.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Aymen Jaber | Professional Portfolio">
+    <meta property="og:url" content="https://AymenEEE.github.io/projects/Solar_Panel_LED.html">
+    <meta property="og:title" content="Solar energy LED beacons | Aymen Jaber | Professional Portfolio">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="https://github.com/AymenEEE.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/techfolio-theme/skyblue.css">
+    <link rel="stylesheet" type="text/css" href="/css/rouge/github.css">
+    <!-- Load MathJax if 'mathjax: true' is found in your _config.yml. -->
+    
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-MML-AM_CHTML">
+    </script>
+    
+
+    <title>Solar energy LED beacons | Aymen Jaber | Professional Portfolio</title>
+  </head>
+  <body>
+  <header class="navbar navbar-expand navbar-light bg-light bg-gradient border-bottom">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">Aymen Jaber</a>
+    <div class="ms-auto">
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <a class="nav-link" href="/#projects">Projects</a>
+        <!--<a class="nav-link" href="/#essays">Essays</a>-->
+        <a class="nav-link" href="/resume.html">CV</a>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<div class="container py-4">
+  <h1 class="display-4">Solar energy LED beacons</h1>
+ <h2> What? </h2>
+<p>Powering a grid using the sun is not as straightforward as it initially seems. This is because the voltage that a solar panel outputs is proportional to sunlight intensity, which is rarely stable (especially in the UK!). Consequently, we need a way of drawing varying amounts of power based on how much is available from a panel.</p>
+
+<p>One solution is using an SMPS (Switch-Mode Power Supplies), which can draw different voltages (hence currents) based on the duty cycle of a PWM signal. The duty cycle is proportion that a signal with period T seconds is on (or HIGH), and varies between 0 and 100 percent.</p>
+
+<p>This also gives us the ability to either “buck” or “boost” the input voltage from the solar panels. “Buck” is a term for reducing input voltage, and “boost” means increasing the voltage. We have decided to go with the boost configuration as this allows us to charge the capacitor to a higher voltage.</p>
+
+<p>The diagram below outlines the circuit’s layout:</p>
+
+<p><img src="../img/Solar_led_project/schematic.png" alt="HTML5 Icon" style="width:400px;height:200px;" /></p>
+
+<h2> Equipment </h2>
+<ul>
+  <li>5 volts, 230mA solar panel (x3)</li>
+  <li>Buck/Boost SMPS device</li>
+  <li>18V, 0.25F Capacitor</li>
+  <li>Buck SMPS with adafruit microcontroller (x3)</li>
+  <li>Red LED</li>
+  <li>Blue LED</li>
+  <li>Yellow LED</li>
+  <li>Sun?</li>
+</ul>
+
+<h2> How? </h2>
+<p>In the boost SMPS, we have implemented a type of MPPT algorithm named “perturb and observe”. This is explained in the code below. 
+In the Buck SMPS, we implemented a PID algorithm that limits the current at the LEDs’ current ratings, to ensure that none of them break.
+The capacitor is directly connected to the grid, which means that the voltage of the grid will never change abruptly due to changing sunlight conditions.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
+ * Boost SMPS code
+ * pin6 is PWM output at 62.5kHz.
+ * duty-cycle saturation is set as 2% - 98%
+*/</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;Wire.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;INA219_WE.h&gt;</span><span class="cp">
+</span>
+<span class="n">INA219_WE</span> <span class="n">ina219</span><span class="p">;</span> <span class="c1">// this is the instantiation of the library for the current sensor</span>
+
+<span class="kt">float</span> <span class="n">open_loop</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">closed_loop</span><span class="p">;</span> <span class="c1">// Duty Cycles</span>
+<span class="kt">float</span> <span class="n">va</span><span class="p">,</span><span class="n">vb</span><span class="p">,</span><span class="n">vref</span><span class="p">,</span><span class="n">iL</span><span class="p">,</span><span class="n">dutyref</span><span class="p">,</span><span class="n">current_mA</span><span class="p">;</span> <span class="c1">// Measurement Variables</span>
+<span class="kt">float</span> <span class="n">prev_vb</span><span class="p">,</span><span class="n">prev_iL</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">del_pwr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="n">del_vb</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="n">del_iL</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">vb_limit</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">variable_p</span><span class="p">;</span>
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">sensorValue0</span><span class="p">,</span><span class="n">sensorValue1</span><span class="p">,</span><span class="n">sensorValue2</span><span class="p">,</span><span class="n">sensorValue3</span><span class="p">;</span>  <span class="c1">// ADC sample values declaration</span>
+<span class="kt">float</span> <span class="n">curr_pwr</span><span class="p">,</span><span class="n">prev_pwr</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">ev</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">cv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">ei</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">oc</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="c1">//internal signals</span>
+<span class="kt">float</span> <span class="n">Ts</span><span class="o">=</span><span class="mf">0.001</span><span class="p">;</span> <span class="c1">//1 kHz control frequency. It's better to design the control period as integral multiple of switching period.</span>
+<span class="kt">float</span> <span class="n">kpv</span><span class="o">=</span><span class="mf">0.05024</span><span class="p">,</span><span class="n">kiv</span><span class="o">=</span><span class="mf">15.78</span><span class="p">,</span><span class="n">kdv</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="c1">// voltage pid.</span>
+<span class="kt">float</span> <span class="n">u0v</span><span class="p">,</span><span class="n">u1v</span><span class="p">,</span><span class="n">delta_uv</span><span class="p">,</span><span class="n">e0v</span><span class="p">,</span><span class="n">e1v</span><span class="p">,</span><span class="n">e2v</span><span class="p">;</span> <span class="c1">// u-&gt;output; e-&gt;error; 0-&gt;this time; 1-&gt;last time; 2-&gt;last last time</span>
+<span class="kt">float</span> <span class="n">kpi</span><span class="o">=</span><span class="mf">0.02512</span><span class="p">,</span><span class="n">kii</span><span class="o">=</span><span class="mf">39.4</span><span class="p">,</span><span class="n">kdi</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="c1">// float kpi=0.02512,kii=39.4,kdi=0; // current pid.</span>
+<span class="kt">float</span> <span class="n">u0i</span><span class="p">,</span><span class="n">u1i</span><span class="p">,</span><span class="n">delta_ui</span><span class="p">,</span><span class="n">e0i</span><span class="p">,</span><span class="n">e1i</span><span class="p">,</span><span class="n">e2i</span><span class="p">;</span> <span class="c1">// Internal values for the current controller</span>
+<span class="kt">float</span> <span class="n">uv_max</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">uv_min</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="c1">//anti-windup limitation</span>
+<span class="kt">float</span> <span class="n">ui_max</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">ui_min</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="c1">//anti-windup limitation</span>
+<span class="kt">float</span> <span class="n">current_limit</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+<span class="n">boolean</span> <span class="n">Boost_mode</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">boolean</span> <span class="n">CL_mode</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">loopTrigger</span><span class="p">;</span>
+<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">com_count</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>   <span class="c1">// a variables to count the interrupts. Used for program debugging.</span>
+<span class="kt">float</span> <span class="n">dutyCycleIncrement</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">;</span>    <span class="c1">// Duty cycle adjustment step size</span>
+<span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">pwr_threshold</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">;</span>
+<span class="kt">float</span> <span class="n">vb_threshold</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+
+  <span class="c1">//Basic pin setups</span>
+  
+  <span class="n">noInterrupts</span><span class="p">();</span> <span class="c1">//disable all interrupts</span>
+  <span class="n">pinMode</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="n">OUTPUT</span><span class="p">);</span>  <span class="c1">//Pin13 is used to time the loops of the controller</span>
+  <span class="n">pinMode</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">INPUT_PULLUP</span><span class="p">);</span> <span class="c1">//Pin3 is the input from the Buck/Boost switch</span>
+  <span class="n">pinMode</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">INPUT_PULLUP</span><span class="p">);</span> <span class="c1">// Pin 2 is the input from the CL/OL switch</span>
+  <span class="n">analogReference</span><span class="p">(</span><span class="n">EXTERNAL</span><span class="p">);</span> <span class="c1">// We are using an external analogue reference for the ADC</span>
+
+  <span class="c1">// TimerA0 initialization for control-loop interrupt.</span>
+  
+  <span class="n">TCA0</span><span class="p">.</span><span class="n">SINGLE</span><span class="p">.</span><span class="n">PER</span> <span class="o">=</span> <span class="mi">999</span><span class="p">;</span> <span class="c1">//</span>
+  <span class="n">TCA0</span><span class="p">.</span><span class="n">SINGLE</span><span class="p">.</span><span class="n">CMP1</span> <span class="o">=</span> <span class="mi">999</span><span class="p">;</span> <span class="c1">//</span>
+  <span class="n">TCA0</span><span class="p">.</span><span class="n">SINGLE</span><span class="p">.</span><span class="n">CTRLA</span> <span class="o">=</span> <span class="n">TCA_SINGLE_CLKSEL_DIV16_gc</span> <span class="o">|</span> <span class="n">TCA_SINGLE_ENABLE_bm</span><span class="p">;</span> <span class="c1">//16 prescaler, 1M.</span>
+  <span class="n">TCA0</span><span class="p">.</span><span class="n">SINGLE</span><span class="p">.</span><span class="n">INTCTRL</span> <span class="o">=</span> <span class="n">TCA_SINGLE_CMP1_bm</span><span class="p">;</span> 
+
+  <span class="c1">// TimerB0 initialization for PWM output</span>
+  
+  <span class="n">pinMode</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">OUTPUT</span><span class="p">);</span>
+  <span class="n">TCB0</span><span class="p">.</span><span class="n">CTRLA</span><span class="o">=</span><span class="n">TCB_CLKSEL_CLKDIV1_gc</span> <span class="o">|</span> <span class="n">TCB_ENABLE_bm</span><span class="p">;</span> <span class="c1">//62.5kHz</span>
+  <span class="n">analogWrite</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">120</span><span class="p">);</span> 
+
+  <span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>   <span class="c1">//serial communication enable. Used for program debugging.</span>
+  <span class="n">interrupts</span><span class="p">();</span>  <span class="c1">//enable interrupts.</span>
+  <span class="n">Wire</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span> <span class="c1">// We need this for the i2c comms for the current sensor</span>
+  <span class="n">ina219</span><span class="p">.</span><span class="n">init</span><span class="p">();</span> <span class="c1">// this initiates the current sensor</span>
+  <span class="n">Wire</span><span class="p">.</span><span class="n">setClock</span><span class="p">(</span><span class="mi">700000</span><span class="p">);</span> <span class="c1">// set the comms speed for i2c</span>
+  
+<span class="p">}</span>
+
+ <span class="kt">void</span> <span class="n">loop</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">loopTrigger</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// This loop is triggered, it wont run unless there is an interrupt</span>
+    
+    <span class="n">digitalWrite</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="n">HIGH</span><span class="p">);</span>   <span class="c1">// set pin 13. Pin13 shows the time consumed by each control cycle. It's used for debugging.</span>
+    
+    <span class="c1">// Sample all of the measurements and check which control mode we are in</span>
+    <span class="n">sampling</span><span class="p">();</span>
+    <span class="n">CL_mode</span> <span class="o">=</span> <span class="n">digitalRead</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="c1">// input from the OL_CL switch</span>
+    <span class="n">Boost_mode</span> <span class="o">=</span> <span class="n">digitalRead</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span> <span class="c1">// input from the Buck_Boost switch</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">Boost_mode</span><span class="p">){</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">CL_mode</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//Closed Loop Boost</span>
+          <span class="n">pwm_modulate</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// This disables the Boost as we are not using this mode</span>
+      <span class="p">}</span><span class="k">else</span><span class="p">{</span> <span class="c1">// Open Loop Boost</span>
+          <span class="n">current_limit</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">// </span>
+          <span class="n">oc</span> <span class="o">=</span> <span class="n">iL</span><span class="o">-</span><span class="n">current_limit</span><span class="p">;</span> <span class="c1">// Calculate the difference between current measurement and current limit</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="n">oc</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">open_loop</span><span class="o">=</span><span class="n">open_loop</span><span class="o">+</span><span class="mf">0.001</span><span class="p">;</span> <span class="c1">// We are above the current limit so less duty cycle</span>
+          <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">open_loop</span><span class="o">=</span><span class="n">open_loop</span><span class="o">-</span><span class="mf">0.001</span><span class="p">;</span> <span class="c1">// We are below the current limit so more duty cycle</span>
+          <span class="p">}</span>
+          
+          <span class="n">vb_limit</span> <span class="o">=</span> <span class="mi">17</span><span class="p">;</span>
+          <span class="k">if</span><span class="p">((</span><span class="n">vb</span><span class="o">-</span><span class="n">vb_limit</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span>
+            <span class="n">open_loop</span> <span class="o">+=</span> <span class="mf">0.1</span><span class="p">;</span> 
+            <span class="p">}</span>
+            
+          <span class="n">open_loop</span><span class="o">=</span><span class="n">saturation</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">open_loop</span><span class="p">,</span><span class="mf">0.99</span><span class="p">,</span><span class="mf">0.29</span><span class="p">);</span> <span class="c1">// saturate the duty cycle at the reference or a min of 0.01</span>
+          <span class="n">pwm_modulate</span><span class="p">(</span><span class="n">open_loop</span><span class="p">);</span> <span class="c1">// and send it out</span>
+          <span class="n">curr_pwr</span> <span class="o">=</span> <span class="n">iL</span><span class="o">*</span><span class="n">vb</span><span class="p">;</span> <span class="c1">//calculated power in this instance</span>
+          <span class="n">del_pwr</span> <span class="o">=</span> <span class="n">curr_pwr</span> <span class="o">-</span> <span class="n">prev_pwr</span><span class="p">;</span> <span class="c1">//calculate power difference</span>
+          <span class="n">del_vb</span> <span class="o">=</span> <span class="n">vb</span> <span class="o">-</span> <span class="n">prev_vb</span><span class="p">;</span> <span class="c1">// calculate voltage difference</span>
+          <span class="k">if</span><span class="p">(</span><span class="n">del_pwr</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">){</span> 
+            <span class="k">if</span><span class="p">(</span><span class="n">del_pwr</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span> 
+              <span class="k">if</span><span class="p">(</span><span class="n">del_vb</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">){</span>
+                <span class="n">open_loop</span> <span class="o">-=</span> <span class="mf">0.01</span><span class="p">;</span> 
+                <span class="p">}</span>
+              <span class="k">else</span><span class="p">{</span>
+                <span class="n">open_loop</span> <span class="o">+=</span> <span class="mf">0.01</span><span class="p">;</span> 
+                <span class="p">}</span>
+              <span class="p">}</span>
+            <span class="k">else</span><span class="p">{</span>
+              <span class="k">if</span><span class="p">(</span><span class="n">del_vb</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">){</span> 
+                <span class="n">open_loop</span> <span class="o">+=</span> <span class="mf">0.01</span><span class="p">;</span> 
+                <span class="p">}</span>
+              <span class="k">else</span><span class="p">{</span>
+                <span class="n">open_loop</span> <span class="o">-=</span> <span class="mf">0.01</span><span class="p">;</span>
+                <span class="p">}</span>
+              <span class="p">}</span>
+          <span class="p">}</span>
+          <span class="k">else</span><span class="p">{</span>
+            <span class="c1">//do nothing</span>
+            <span class="p">}</span>
+      <span class="n">open_loop</span><span class="o">=</span><span class="n">saturation</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">open_loop</span><span class="p">,</span><span class="mf">0.99</span><span class="p">,</span><span class="mf">0.29</span><span class="p">);</span> <span class="c1">// saturate the duty cycle between 0.99 and 0.29</span>
+      <span class="n">pwm_modulate</span><span class="p">(</span><span class="n">open_loop</span><span class="p">);</span> <span class="c1">// and send it out</span>
+      <span class="n">variable_p</span> <span class="o">=</span> <span class="n">prev_pwr</span><span class="p">;</span> <span class="c1">// for debugging</span>
+      <span class="n">prev_pwr</span> <span class="o">=</span> <span class="n">curr_pwr</span><span class="p">;</span>
+      <span class="n">prev_vb</span> <span class="o">=</span> <span class="n">vb</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span><span class="k">else</span><span class="p">{</span>      
+      <span class="k">if</span> <span class="p">(</span><span class="n">CL_mode</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// Closed Loop Buck</span>
+          <span class="n">pwm_modulate</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// This disables the Buck as we are not using this mode</span>
+      <span class="p">}</span><span class="k">else</span><span class="p">{</span> <span class="c1">// Open Loop Buck</span>
+          <span class="n">pwm_modulate</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// This disables the Buck as we are not using this mode</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">com_count</span><span class="o">++</span><span class="p">;</span>              <span class="c1">//used for debugging.</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">com_count</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>  <span class="c1">//send out data every second.</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"Va: "</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">va</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"</span><span class="se">\t</span><span class="s">"</span><span class="p">);</span>
+
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"Vb: "</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">vb</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"</span><span class="se">\t</span><span class="s">"</span><span class="p">);</span>
+
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"Inductor Current: "</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">iL</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"</span><span class="se">\t\t</span><span class="s">"</span><span class="p">);</span>
+
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"Boost Mode: "</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">Boost_mode</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"</span><span class="se">\t\t</span><span class="s">"</span><span class="p">);</span>
+
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"CL Mode: "</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">CL_mode</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"</span><span class="se">\t\t</span><span class="s">"</span><span class="p">);</span>
+
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"Duty(inverted): "</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">open_loop</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"</span><span class="se">\t\t</span><span class="s">"</span><span class="p">);</span>
+
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"Curr_pwr: "</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">curr_pwr</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"</span><span class="se">\t\t</span><span class="s">"</span><span class="p">);</span>
+
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"Iout: "</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">curr_pwr</span><span class="o">/</span><span class="n">va</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"</span><span class="se">\t\t</span><span class="s">"</span><span class="p">);</span>
+      
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"prev_pwr: "</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="n">variable_p</span><span class="p">);</span>
+      <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+      <span class="n">com_count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>   
+    <span class="p">}</span>
+    <span class="n">prev_pwr</span> <span class="o">=</span> <span class="n">curr_pwr</span><span class="p">;</span>
+    <span class="n">digitalWrite</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="n">LOW</span><span class="p">);</span>   <span class="c1">// reset pin13.</span>
+    <span class="n">loopTrigger</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="c1">// Timer A CMP1 interrupt. Every 800us the program enters this interrupt. </span>
+<span class="c1">// This, clears the incoming interrupt flag and triggers the main loop.</span>
+
+<span class="n">ISR</span><span class="p">(</span><span class="n">TCA0_CMP1_vect</span><span class="p">){</span>
+  <span class="n">TCA0</span><span class="p">.</span><span class="n">SINGLE</span><span class="p">.</span><span class="n">INTFLAGS</span> <span class="o">|=</span> <span class="n">TCA_SINGLE_CMP1_bm</span><span class="p">;</span> <span class="c1">//clear interrupt flag</span>
+  <span class="n">loopTrigger</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// This subroutine processes all of the analogue samples, creating the required values for the main loop</span>
+
+<span class="kt">void</span> <span class="n">sampling</span><span class="p">(){</span>
+
+  <span class="c1">// Make the initial sampling operations for the circuit measurements</span>
+  
+  <span class="n">sensorValue0</span> <span class="o">=</span> <span class="n">analogRead</span><span class="p">(</span><span class="n">A0</span><span class="p">);</span> <span class="c1">//sample Vb</span>
+  <span class="n">sensorValue2</span> <span class="o">=</span> <span class="n">analogRead</span><span class="p">(</span><span class="n">A2</span><span class="p">);</span> <span class="c1">//sample Vref</span>
+  <span class="n">sensorValue3</span> <span class="o">=</span> <span class="n">analogRead</span><span class="p">(</span><span class="n">A3</span><span class="p">);</span> <span class="c1">//sample Va</span>
+  <span class="n">current_mA</span> <span class="o">=</span> <span class="n">ina219</span><span class="p">.</span><span class="n">getCurrent_mA</span><span class="p">();</span> <span class="c1">// sample the inductor current (via the sensor chip)</span>
+
+  <span class="c1">// Process the values so they are a bit more usable/readable</span>
+  <span class="c1">// The analogRead process gives a value between 0 and 1023 </span>
+  <span class="c1">// representing a voltage between 0 and the analogue reference which is 4.096V</span>
+  
+  <span class="n">vb</span> <span class="o">=</span> <span class="n">sensorValue0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">12400</span><span class="o">/</span><span class="mi">2400</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">4.096</span> <span class="o">/</span> <span class="mf">1023.0</span><span class="p">);</span> <span class="c1">// Convert the Vb sensor reading to volts</span>
+  <span class="n">vref</span> <span class="o">=</span> <span class="n">sensorValue2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">4.096</span> <span class="o">/</span> <span class="mf">1023.0</span><span class="p">);</span> <span class="c1">// Convert the Vref sensor reading to volts</span>
+  <span class="n">va</span> <span class="o">=</span> <span class="n">sensorValue3</span> <span class="o">*</span> <span class="p">(</span><span class="mi">12400</span><span class="o">/</span><span class="mi">2400</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">4.096</span> <span class="o">/</span> <span class="mf">1023.0</span><span class="p">);</span> <span class="c1">// Convert the Va sensor reading to volts</span>
+
+  <span class="c1">// The inductor current is in mA from the sensor so we need to convert to amps.</span>
+  <span class="c1">// We want to treat it as an input current in the Boost, so its also inverted</span>
+  <span class="c1">// For open loop control the duty cycle reference is calculated from the sensor</span>
+  <span class="c1">// differently from the Vref, this time scaled between zero and 1.</span>
+  <span class="c1">// The boost duty cycle needs to be saturated with a 0.33 minimum to prevent high output voltages</span>
+  
+  <span class="k">if</span> <span class="p">(</span><span class="n">Boost_mode</span> <span class="o">==</span> <span class="mi">1</span><span class="p">){</span>
+    <span class="n">iL</span> <span class="o">=</span> <span class="o">-</span><span class="n">current_mA</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">;</span>
+    <span class="n">dutyref</span> <span class="o">=</span> <span class="n">saturation</span><span class="p">(</span><span class="n">sensorValue2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">1023.0</span><span class="p">),</span><span class="mf">0.99</span><span class="p">,</span><span class="mf">0.33</span><span class="p">);</span>
+  <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+    <span class="n">iL</span> <span class="o">=</span> <span class="n">current_mA</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">;</span>
+    <span class="n">dutyref</span> <span class="o">=</span> <span class="n">sensorValue2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">1023.0</span><span class="p">);</span>
+  <span class="p">}</span>   
+<span class="p">}</span>
+
+<span class="kt">float</span> <span class="n">saturation</span><span class="p">(</span> <span class="kt">float</span> <span class="n">sat_input</span><span class="p">,</span> <span class="kt">float</span> <span class="n">uplim</span><span class="p">,</span> <span class="kt">float</span> <span class="n">lowlim</span><span class="p">){</span> <span class="c1">// Saturatio function</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">sat_input</span> <span class="o">&gt;</span> <span class="n">uplim</span><span class="p">)</span> <span class="n">sat_input</span><span class="o">=</span><span class="n">uplim</span><span class="p">;</span>
+  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">sat_input</span> <span class="o">&lt;</span> <span class="n">lowlim</span> <span class="p">)</span> <span class="n">sat_input</span><span class="o">=</span><span class="n">lowlim</span><span class="p">;</span>
+  <span class="k">else</span><span class="p">;</span>
+  <span class="k">return</span> <span class="n">sat_input</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+
+<span class="kt">void</span> <span class="n">pwm_modulate</span><span class="p">(</span><span class="kt">float</span> <span class="n">pwm_input</span><span class="p">){</span> <span class="c1">// PWM function</span>
+  <span class="n">analogWrite</span><span class="p">(</span><span class="mi">6</span><span class="p">,(</span><span class="kt">int</span><span class="p">)(</span><span class="mi">255</span><span class="o">-</span><span class="n">pwm_input</span><span class="o">*</span><span class="mi">255</span><span class="p">));</span> 
+<span class="p">}</span>
+
+
+<span class="cm">/*end of the program.*/</span>
+</code></pre></div></div>
+
+<p>Below is the BUCK smps code for the LED’s:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Developed by Aymen Jaber and Sakhwat 
+</span><span class="kn">from</span> <span class="nn">machine</span> <span class="kn">import</span> <span class="n">Pin</span><span class="p">,</span> <span class="n">ADC</span><span class="p">,</span> <span class="n">PWM</span>
+
+<span class="n">vret_pin</span> <span class="o">=</span> <span class="n">ADC</span><span class="p">(</span><span class="n">Pin</span><span class="p">(</span><span class="mi">26</span><span class="p">))</span>
+<span class="n">vout_pin</span> <span class="o">=</span> <span class="n">ADC</span><span class="p">(</span><span class="n">Pin</span><span class="p">(</span><span class="mi">28</span><span class="p">))</span>
+<span class="n">vin_pin</span> <span class="o">=</span> <span class="n">ADC</span><span class="p">(</span><span class="n">Pin</span><span class="p">(</span><span class="mi">27</span><span class="p">))</span>
+<span class="n">pwm</span> <span class="o">=</span> <span class="n">PWM</span><span class="p">(</span><span class="n">Pin</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">pwm</span><span class="p">.</span><span class="n">freq</span><span class="p">(</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">pwm_en</span> <span class="o">=</span> <span class="n">Pin</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Pin</span><span class="p">.</span><span class="n">OUT</span><span class="p">)</span>
+
+<span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">pwm_out</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">pwm_ref</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">setpoint</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">delta</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">I_min</span> <span class="o">=</span> <span class="mf">0.075</span> <span class="c1"># this is different for various LED colours
+</span><span class="n">I_max</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="c1"># so does this one
+</span>
+<span class="c1"># Define the reference voltage of the ADC (adjust as per your system)
+</span><span class="n">ADC_REFERENCE_VOLTAGE</span> <span class="o">=</span> <span class="mf">3.3</span>
+
+<span class="k">def</span> <span class="nf">adc_to_voltage</span><span class="p">(</span><span class="n">adc_value</span><span class="p">):</span> 
+    <span class="k">return</span> <span class="p">(</span><span class="n">adc_value</span> <span class="o">/</span> <span class="mi">65535</span><span class="p">)</span> <span class="o">*</span> <span class="n">ADC_REFERENCE_VOLTAGE</span> <span class="c1"># convert digital reading to voltage
+</span>
+<span class="k">def</span> <span class="nf">voltage_to_adc</span><span class="p">(</span><span class="n">voltage_value</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">voltage_value</span> <span class="o">*</span> <span class="mi">65535</span><span class="p">)</span> <span class="o">/</span> <span class="n">ADC_REFERENCE_VOLTAGE</span> <span class="c1"># convert voltage reading to digital
+</span>
+
+<span class="k">def</span> <span class="nf">saturate</span><span class="p">(</span><span class="n">duty</span><span class="p">):</span> <span class="c1">#limit duty cycle to protect LED drivers
+</span>    <span class="k">if</span> <span class="n">duty</span> <span class="o">&gt;</span> <span class="mi">62500</span><span class="p">:</span>
+        <span class="n">duty</span> <span class="o">=</span> <span class="mi">62500</span>
+    <span class="k">if</span> <span class="n">duty</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="n">duty</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="k">return</span> <span class="n">duty</span>
+
+
+<span class="k">def</span> <span class="nf">current_limiter</span><span class="p">(</span><span class="n">vret</span><span class="p">,</span> <span class="n">pwm_ref</span><span class="p">,</span><span class="n">I_max</span><span class="p">):</span> <span class="c1"># Used to limit current based on I_max
+</span>    <span class="k">if</span> <span class="n">vret</span> <span class="o">&gt;=</span> <span class="n">I_max</span><span class="p">:</span>
+        <span class="n">pwm_ref</span> <span class="o">=</span> <span class="n">pwm_ref</span> <span class="o">+</span> <span class="n">delta</span>
+    <span class="k">elif</span> <span class="n">vret</span> <span class="o">&lt;=</span> <span class="n">I_min</span><span class="p">:</span>
+        <span class="n">pwm_ref</span> <span class="o">=</span> <span class="n">pwm_ref</span> <span class="o">-</span> <span class="n">delta</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pwm_ref</span> <span class="o">=</span> <span class="n">pwm_ref</span>
+    <span class="c1">#return pwm_ref
+</span>
+<span class="c1">#PID control variables
+# This also varies between LED colours
+</span><span class="n">kpi</span> <span class="o">=</span> <span class="mf">0.5</span> 
+<span class="n">kdi</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">kii</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+<span class="k">def</span> <span class="nf">pidi</span><span class="p">(</span><span class="n">pid_input</span><span class="p">)</span>
+    <span class="n">e_integration</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1">#initalises e_integration value
+</span>    <span class="k">global</span> <span class="n">e1i</span><span class="p">,</span><span class="n">e2i</span> <span class="c1">#creates global variable that store the previous values 
+</span>    <span class="n">e0i</span> <span class="o">=</span> <span class="mf">0.07</span> <span class="o">-</span> <span class="n">vret</span>
+    <span class="n">e_integration</span> <span class="o">=</span> <span class="n">e0i</span>
+    <span class="n">u1i</span> <span class="o">=</span> <span class="n">vret</span>
+    <span class="n">e2i</span> <span class="o">=</span> <span class="n">e1i</span>
+    <span class="n">e1i</span> <span class="o">=</span> <span class="n">pid_input</span>
+    
+    <span class="c1">#anti-windup
+</span>    <span class="k">if</span> <span class="n">u1i</span> <span class="o">&gt;=</span> <span class="n">I_max</span>
+        <span class="n">e_integration</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">u1i</span> <span class="o">&lt;=</span> <span class="n">I_min</span>
+        <span class="n">e_integration</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">delta_ui</span> <span class="o">=</span> <span class="n">kpi</span> <span class="o">*</span> <span class="p">(</span><span class="n">e0i</span> <span class="o">-</span> <span class="n">e1i</span><span class="p">)</span> <span class="o">+</span> <span class="n">kii</span> <span class="o">*</span> <span class="n">Ts</span> <span class="o">*</span> <span class="n">e_integration</span> <span class="o">+</span> <span class="n">kdi</span> <span class="o">/</span> <span class="n">Ts</span> <span class="o">*</span> <span class="p">(</span><span class="n">e0i</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">e1i</span> <span class="o">+</span> <span class="n">e2i</span><span class="p">)</span>
+    <span class="n">u0i</span> <span class="o">=</span> <span class="n">u1i</span> <span class="o">+</span> <span class="n">delta_ui</span>
+    <span class="k">return</span> <span class="n">u0i</span> 
+        
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">pwm_en</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">vin_bin</span> <span class="o">=</span> <span class="n">vin_pin</span><span class="p">.</span><span class="n">read_u16</span><span class="p">()</span>
+    <span class="n">vout_bin</span> <span class="o">=</span> <span class="n">vout_pin</span><span class="p">.</span><span class="n">read_u16</span><span class="p">()</span>
+    <span class="n">vret_bin</span> <span class="o">=</span> <span class="n">vret_pin</span><span class="p">.</span><span class="n">read_u16</span><span class="p">()</span>
+ 
+    <span class="n">vin</span> <span class="o">=</span> <span class="n">adc_to_voltage</span><span class="p">(</span><span class="n">vin_pin</span><span class="p">.</span><span class="n">read_u16</span><span class="p">())</span>   <span class="c1">#This reads the pins in volts rather than binary
+</span>    <span class="n">vout</span> <span class="o">=</span> <span class="n">adc_to_voltage</span><span class="p">(</span><span class="n">vout_pin</span><span class="p">.</span><span class="n">read_u16</span><span class="p">())</span>
+    <span class="n">vret</span> <span class="o">=</span> <span class="n">adc_to_voltage</span><span class="p">(</span><span class="n">vret_pin</span><span class="p">.</span><span class="n">read_u16</span><span class="p">())</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">maxpower</span> <span class="o">=</span> <span class="n">vret</span> <span class="o">*</span> <span class="n">vret</span>
+    <span class="c1">#I_max = maxpower / vout
+</span>
+    <span class="n">pwm_ref</span> <span class="o">=</span> <span class="mi">25000</span>
+    <span class="n">pwm_out</span> <span class="o">=</span> <span class="n">saturate</span><span class="p">(</span><span class="n">pwm_ref</span><span class="p">)</span>
+    <span class="n">pwm</span><span class="p">.</span><span class="n">duty_u16</span><span class="p">(</span><span class="n">pwm_out</span><span class="p">)</span>
+    <span class="n">current_limiter</span><span class="p">(</span><span class="n">vret</span><span class="p">,</span> <span class="n">pwm_out</span><span class="o">/</span><span class="mi">62500</span><span class="p">,</span><span class="n">I_max</span><span class="p">)</span>
+    <span class="n">pwm_out</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pidi</span><span class="p">(</span><span class="n">vret</span><span class="p">)</span> <span class="o">*</span> <span class="mi">62500</span><span class="p">)</span>
+    
+     
+<span class="k">for</span> 
+    
+
+    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">2000</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Vin = {:.0f}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">vin</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Vout = {:.0f}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">vout</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Vret = {:.0f}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">vret</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Duty = {:.0f}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">pwm_out</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Bin Vin = {:.0f}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">vin_bin</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Bin Vout = {:.0f}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">vout_bin</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Bin Vret = {:.0f}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">vret_bin</span><span class="p">))</span>
+    
+        
+
+        
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<h2> Results </h2>
+<p>To test the sytem out, I simulated the solar panels using a variable power supply. This is more reliable than using the sun as we can directly control voltage levels.</p>
+
+<p>When the voltage increases, I saw that the boost SMPS was drawing more power. Likewise, when voltage decreases the SMPS draws less power. 
+At the same time, the LED’s worked well when connected to the grid, proving the system to be reliable.</p>
+
+<p>After multiple tests, we saw that the LED’s lasted for a maximum of 20 seconds when voltage is zero.</p>
+
+<p>Below is a video showcasing the system:</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/L2T6Ma9WZpw?si=nWW-nAM6TElNg7fB" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+<p>And outside with the real panels:</p>
+
+<iframe width="560" height="400" src="https://www.youtube.com/embed/GuKI7Nkt1Wo?si=3TTA17BVIXxN1iQy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen=""></iframe>
+
+
+</div>
+
+<footer class="navbar navbar-expand navbar-light bg-light bg-gradient border-top">
+  <div class="container-fluid">
+    <div class="ms-auto">
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <small><a class="nav-link" href="https://techfolios.github.io">Made with Techfolios</a></small>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+  </body>
+</html>
