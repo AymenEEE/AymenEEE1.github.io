@@ -17,7 +17,7 @@ summary: "This page shows a brief summary of my FPGA projects which includes 7-s
 Driving a segments display is rather simple. All we have to do is create a look up table that corresponds to the individual segments and we're all good .
 
 <div class="text-center p-4">
-<img width="400px" src="..img/FPGA/Segment.png" class="img-thumbnail" >
+<img width="800px" src="img/FPGA/LFSR.png" class="img-thumbnail" >
 </div>
     
 <iframe width="560" height="315" src="https://www.youtube.com/embed/sjViU3GZsU4?si=7ITH9VzRnV-XH2_N" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
