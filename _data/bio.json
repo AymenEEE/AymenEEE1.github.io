@@ -25,11 +25,11 @@
     ]
   },
   "interests": [
-    { "name": "Analog circuits" },
-    { "name": "Power supply design" },
-    { "name": "Digital circuits" },
-    { "name": "Control algorithm development" },
-    { "name": "Robotics" }
+    { "name": "Analog circuits"},
+    { "name": "Power supply design"},
+    { "name": "Digital circuits"},
+    { "name": "Control algorithm development"},
+    { "name": "Robotics"}
   ],
   "skills": [
     {
