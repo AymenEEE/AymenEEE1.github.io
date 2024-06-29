@@ -7,19 +7,29 @@
     "phone": "07467584709",
     "website": "https://AymenEEE.github.io",
     "summary": "Currently studying Electrical and electronic engineering with Management at Imperial College London. I expect to graduate in Spring, 2025.",
-    "location": {  "city": "London", "countryCode": "UK"},
+    "location": {
+      "city": "London",
+      "countryCode": "UK"
+    },
     "profiles": [
-      { "network": "github", "username": "AymenEEE", "url": "http://github.com/AymenEEE" },
-      { "network": "linkedin", "username": "Aymen Jaber", "url": "https://www.linkedin.com/in/aymen-jaber-078629262/" }
+      {
+        "network": "github",
+        "username": "AymenEEE",
+        "url": "http://github.com/AymenEEE"
+      },
+      {
+        "network": "linkedin",
+        "username": "Aymen Jaber",
+        "url": "https://www.linkedin.com/in/aymen-jaber-078629262/"
+      }
     ]
   },
   "interests": [
     { "name": "Analog circuits" },
     { "name": "Power supply design" },
     { "name": "Digital circuits" },
-    { "name": "Control algorithm developement" },
+    { "name": "Control algorithm development" },
     { "name": "Robotics" }
-    
   ],
   "skills": [
     {
@@ -30,38 +40,31 @@
       "name": "Platforms",
       "keywords": ["GitHub", "Arduino", "Jupyter Notebook", "LTSPICE"]
     },
-    
     {
       "name": "Soft skills",
       "keywords": ["Project management", "Communication with clients", "Documentation", "Report writing"]
     },
-
     {
       "name": "Control Systems",
       "keywords": ["PID control systems", "Feedback loop systems", "System response analysis"]
     },
-
     {
       "name": "Power Systems",
       "keywords": ["DC/DC and AC/DC converters", "Maximum power point tracking algorithm", "Solar panel systems"]
     },
-
     {
       "name": "Analogue",
       "keywords": ["Circuit simulation and analysis using LTSpice", "Experience in integrating operational amplifiers with speakers", "Active and passive filters"]
     },
-
     {
       "name": "Digital Systems",
       "keywords": ["Digital circuit design and verification using SystemVerilog", "Audio processing using DAC's and ADC's integrated with an FPGA system", "Knowledge in logic gates and counters", "Digital signal processing"]
     },
-
     {
       "name": "Practical Skills",
-      "keywords": ["Electrical testing instruments like oscilloscopes and multi-meters", "Soldering", "Reading and understanding datasheets","Drilling"]
+      "keywords": ["Electrical testing instruments like oscilloscopes and multi-meters", "Soldering", "Reading and understanding datasheets", "Drilling"]
     }
   ],
-  
   "education": [
     {
       "institution": "Imperial College London",
@@ -69,11 +72,23 @@
       "studyType": "MEng",
       "startDate": "2021-10-01",
       "endDate": "Present",
-      "courses": [ "Control Systems", "Power Electronics", "Circuits & Systems", "Mathematics for Engineers", "Signals & Systems" , "Electromagnetism", "Analysis & Design of Circuits", "Digital Electronics and Computer Architecture", "Topics in Electrical Engineering", "Control Engineering","Robotic Manipulation", "Managing engineering projects","Accounting"
+      "courses": [
+        "Control Systems",
+        "Power Electronics",
+        "Circuits & Systems",
+        "Mathematics for Engineers",
+        "Signals & Systems",
+        "Electromagnetism",
+        "Analysis & Design of Circuits",
+        "Digital Electronics and Computer Architecture",
+        "Topics in Electrical Engineering",
+        "Control Engineering",
+        "Robotic Manipulation",
+        "Managing engineering projects",
+        "Accounting"
       ]
     }
   ],
-  
   "references": [
     {
       "name": "Available upon request"
