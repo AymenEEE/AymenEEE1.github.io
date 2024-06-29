@@ -14,9 +14,11 @@
     ]
   },
   "interests": [
-    { "name": "Analysing circuits" },
-    { "name": "Digital circuits in FPGA" },
+    { "name": "Analog circuits" },
+    { "name": "Power supply design" },
+    { "name": "Digital circuits" },
     { "name": "Control algorithm developement" },
+    { "name": "Robotics" },
     
   ],
   "skills": [
@@ -41,7 +43,7 @@
 
     {
       "name": "Power Systems",
-      "keywords": ["DC/DC systems such as SMPS", "Maximum power point tracking algorithm", "Solar panel systems"]
+      "keywords": ["DC/DC and AC/DC converters", "Maximum power point tracking algorithm", "Solar panel systems"]
     },
 
     {
@@ -56,7 +58,7 @@
 
     {
       "name": "Practical Skills",
-      "keywords": ["Electrical testing instruments like oscilloscopes and multi-meters", "Soldering", "Reading and understanding datasheets"]
+      "keywords": ["Electrical testing instruments like oscilloscopes and multi-meters", "Soldering", "Reading and understanding datasheets","Drilling"]
     }
   ],
   
@@ -67,7 +69,7 @@
       "studyType": "MEng",
       "startDate": "2021-10-01",
       "endDate": "Present",
-      "courses": [ "Control Systems", "Power Electronics", "Circuits & Systems", "Mathematics for Engineers", "Signals & Systems" , "Electromagnetism", "Analysis & Design of Circuits", "Digital Electronics and Computer Architecture", "Topics in Electrical Engineering"
+      "courses": [ "Control Systems", "Power Electronics", "Circuits & Systems", "Mathematics for Engineers", "Signals & Systems" , "Electromagnetism", "Analysis & Design of Circuits", "Digital Electronics and Computer Architecture", "Topics in Electrical Engineering", "Control Engineering","Robotic Manipulation", "Managing engineering projects","Accounting"
       ]
     }
   ],
