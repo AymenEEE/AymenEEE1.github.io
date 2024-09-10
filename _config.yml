@@ -20,6 +20,9 @@ kramdown:
   syntax_highlighter: rouge
 strict_front_matter: true
 mathjax: true
+
+name: Update RubyGems
+run: gem update --system
 exclude:
   - Gemfile
   - Gemfile.lock
