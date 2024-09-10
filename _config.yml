@@ -21,8 +21,10 @@ kramdown:
 strict_front_matter: true
 mathjax: true
 
-name: Update RubyGems
-run: gem update --system
+gem install rubygems-update
+update_rubygems
+gem update --system
+
 exclude:
   - Gemfile
   - Gemfile.lock
