@@ -12,6 +12,4 @@ gem "webrick", "~> 1.7"
 gem 'html-proofer'
 gem 'jekyll-gist'
 gem 'rouge'
-gem install rubygems-update
-update_rubygems
-gem update --system
+
