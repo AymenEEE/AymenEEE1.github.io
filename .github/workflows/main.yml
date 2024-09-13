@@ -16,9 +16,6 @@ jobs:
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
           restore-keys: |
             ${{ runner.os }}-gems-
-            
-      - name: Update RubyGems
-        run: gem update --system
         
       - uses: limitusus/json-syntax-check@v1
         with:
