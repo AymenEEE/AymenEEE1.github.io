@@ -1,5 +1,4 @@
-- name: Update RubyGems
-  run: gem update --system
+
 {
   "basics": {
     "name": "Aymen Jaber",
