@@ -1,5 +1,5 @@
 ---
-layout: project
+layout: project 
 type: project
 image: img/Thumbnail.jpg
 title: "Balancing Drone"
