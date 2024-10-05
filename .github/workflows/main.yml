@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Set up Ruby
-      uses: ruby/setup-ruby@v2
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: '3.3.2' # Match the Ruby version your project uses
 
